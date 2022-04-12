@@ -1,20 +1,22 @@
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
 
-public class Producer<T> extends Thread{
+public class Producer<T> implements Runnable{
 
-    private ArrayBlockingQueue queue;
+    private final ArrayBlockingQueue sharedQueue;
 
-    public Producer(ArrayBlockingQueue queue) {
-        this.queue = queue;
+    public Producer(ArrayBlockingQueue sharedQueue) {
+        this.sharedQueue = sharedQueue;
     }
 
-    public void run(T item) {
-        //Random rand = new Random();
-        //int item = rand.nextInt();
-        try {
-            queue.put(item);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void run() {
+            try {
+                sharedQueue.put(Thread.currentThread().getName());
+                System.out.println("Produced: " + Thread.currentThread().getName());
+            } catch (InterruptedException ex) {
+                System.out.println(ex.getMessage());
+            }
     }
+
 }

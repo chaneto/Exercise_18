@@ -1,45 +1,41 @@
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class ArrayBlockingQueue<T>{
 
-    private BlockingDeque<T> queue;
+    private Queue<T> queue;
     private int limit;
 
     public ArrayBlockingQueue(int limit) {
-        this.queue = new LinkedBlockingDeque<>(limit);
+        this.queue = new LinkedList<T>();
         this.limit = limit;
     }
 
-    public synchronized void put(T item) throws InterruptedException {
+    public synchronized void put(T item)  throws InterruptedException  {
 
         while (this.queue.size() >= this.limit) {
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        notifyAll();
-        this.queue.put(item);
-    }
-
-    public synchronized void take() throws InterruptedException {
-
-        while (this.queue.isEmpty()) {
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            System.out.println("Queue is full Producer: "+ Thread.currentThread().getName() + " is waiting");
+            this.wait();
         }
 
-        notifyAll();
-        this.queue.take();
+        this.queue.add(item);
+            this.notifyAll();
     }
 
-    public BlockingDeque<T> getQueue() {
+    public synchronized T take()  throws InterruptedException{
+
+        while (this.queue.size() == 0) {
+            System.out.println("Queue is empty Consumer: "+ Thread.currentThread().getName() + " is waiting");
+            this.wait();
+        }
+
+        this.notifyAll();
+        return queue.poll();
+
+    }
+
+    public Queue<T> getQueue() {
         return queue;
     }
 

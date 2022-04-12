@@ -1,15 +1,18 @@
-public class Consumer extends Thread{
-    private ArrayBlockingQueue queue;
+import java.util.concurrent.BlockingQueue;
 
-    public Consumer(ArrayBlockingQueue queue) {
-        this.queue = queue;
+public class Consumer implements Runnable{
+    private final ArrayBlockingQueue sharedQueue;
+
+    public Consumer (ArrayBlockingQueue sharedQueue) {
+        this.sharedQueue = sharedQueue;
     }
 
+    @Override
     public void run() {
-        try {
-            queue.take();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            try {
+                System.out.println("Consumed: "+ sharedQueue.take());
+            } catch (InterruptedException ex) {
+                System.out.println(ex.getMessage());
+            }
     }
 }
