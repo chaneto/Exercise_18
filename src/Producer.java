@@ -1,6 +1,3 @@
-import java.util.Random;
-import java.util.concurrent.BlockingQueue;
-
 public class Producer<T> implements Runnable{
 
     private final ArrayBlockingQueue sharedQueue;
